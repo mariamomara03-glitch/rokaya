@@ -1,1 +1,227 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little World for Rokaya 🎀</title>
+
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #ffe4ef, #fff5f8, #f8d7e5); color: #75445b; text-align: center; min-height: 100vh; }
+.page { display: none; min-height: 100vh; padding: 30px 16px; align-items: center; justify-content: center; flex-direction: column; }
+.page.active { display: flex; }
+.card { background: rgba(255,255,255,.88); width: 100%; max-width: 650px; padding: 28px 20px; border-radius: 25px; box-shadow: 0 8px 30px rgba(160,80,110,.15); }
+h1 { color: #c45c89; }
+p { line-height: 2; font-size: 17px; white-space: pre-line; }
+button { border: none; background: #d979a2; color: white; padding: 13px 25px; border-radius: 30px; font-size: 16px; margin: 10px; cursor: pointer; }
+input { padding: 13px; border: 2px solid #e7a7c2; border-radius: 20px; width: 90%; max-width: 300px; text-align: center; font-size: 16px; margin: 15px; }
+.memory-photo { width: 100%; max-height: 420px; object-fit: contain; border-radius: 18px; margin: 15px 0; background: #fff0f5; }
+.memory-number { color: #d979a2; font-size: 14px; }
+.music-button { background: #a95d83; font-size: 14px; }
+.heart { font-size: 28px; margin: 10px; }
+.final-message { text-align: right; }
+</style>
+</head>
+
+<body>
+
+<section id="passwordPage" class="page active">
+  <div class="card">
+    <div class="heart">🎀 💗 🎀</div>
+    <h1>A Little World for You</h1>
+    <p>Before entering our little world...
+There's a secret password! 💌</p>
+    <input id="passwordInput" type="password" placeholder="Enter the password" autocapitalize="off" autocomplete="off">
+    <br>
+    <button onclick="checkPassword()">Open My Gift 💗</button>
+    <p id="passwordError"></p>
+  </div>
+</section>
+
+<section id="welcomePage" class="page">
+  <div class="card">
+    <div class="heart">🦢 🎀 🦢</div>
+    <h1>Happy Birthday, Rokaya!</h1>
+    <p>
+Welcome to our little world...
+A world full of memories, laughter,
+and moments I'll always keep in my heart. 💞
+    </p>
+    <button onclick="showPage('memoriesPage')">Let's Remember Together ✨</button>
+  </div>
+</section>
+
+<section id="memoriesPage" class="page">
+  <div class="card">
+    <div class="memory-number" id="memoryNumber"></div>
+    <h1 id="memoryTitle"></h1>
+    <img id="memoryImage" class="memory-photo" src="./Photo1.jpg" alt="Our memory">
+    <p id="memoryCaption"></p>
+    <button onclick="previousMemory()">Previous</button>
+    <button id="nextMemoryButton" onclick="nextMemory()">Next Memory 💗</button>
+    <div>
+      <button class="music-button" onclick="toggleMusic()">🎵 Play / Pause Music</button>
+    </div>
+  </div>
+</section>
+
+<section id="finalPage" class="page">
+  <div class="card">
+    <div class="heart">🎂 💗 🎀</div>
+    <h1>To My Favorite Girl...</h1>
+    <p class="final-message">
+كل سنة وإنتِ طيبة يا حبيبتي ومعايا، ويا رب ما أشوف فيكي أي حاجة وحشة أبدًا، ونفضل مع بعض، ونحقق أحلامنا سوا، ونمر بكل مراحل الحياة سوا.
+
+ويا رب أفرح بيكي، وأشوفك من أسعد الناس يا حبيبتي. عقبال مليون سنة وإحنا سوا، وفي صحة وسعادة وهنا.
+
+دي حاجة بسيطة ما تعبّرش عن حبي أبدًا، بجد بحبك أوي، وأتمنى أشوفك سعيدة ومبسوطة في حياتك دايمًا، وحياتك كلها هنا. بحبك أوي، وبحب كل حاجة ما بينا وذكرياتنا بجد، ربنا يديمك ليا ونفضل مع بعض لآخر العمر.
+
+ويا رب المفاجأة تكون عجبتك وفرحتك، علشان أهم حاجة عندي فرحتك، حقيقي! وعارفة إنك هتتفاجئي جامد، لأني بعتبر إن خلاص خدي الهدية ومفاضلش غير الاستوريهات والفيديوهات وبتاع 😂💗
+
+فبجد أتمنى إنها تفرحك وتسعدك. ربنا يديم ضحكتك الحلوة دي، وما أشوفش فيكي حاجة وحشة أبدًا، وربنا يقدّرني وأسعدك كمان وكمان.
+
+كل سنة وإنتِ طيبة وجميلة زي ما إنتِ، ويا رب مع بعض لآخر العمر يا رقروقتي.
+
+بحبك أوي بجد، هابي بيرث داي جيرل لأجمل بنوتة! 😚💞
+    </p>
+    <div class="heart">💗 🎀 💗</div>
+    <h2>Forever & Always</h2>
+  </div>
+</section>
+
+<audio id="backgroundMusic" src="./Song.m4a" preload="auto"></audio>
+
+<script>
+const SECRET_PASSWORD = "FriendsForeverM♡R";
+const MUSIC_START_SECONDS = 40;
+
+const memories = [
+{
+ title: "Our First Solo Outing",
+ image: "./Photo1.jpg",
+ caption: `أول يوم خرجنا فيه سوا لوحدنا، أنا وإنتِ بس. كنت سعيدة جدًا وإنتِ بتحكيلي وبنحكي سوا، ورغم تاتش الاسموزي البطيخ 😂 إلا إنها ذكرى لذيذة جدًا على قلبي وبحبها أوي، وهتفضل من الذكريات المميزة بالنسبالي. 💞`
+},
+{
+ title: "Our First Birthday Together",
+ image: "./Photo2.jpg",
+ caption: `كان أول عيد ميلاد ليكي يعدّي علينا وإحنا سوا، وكنا لسه علاقتنا كأنها سطحية حرفيًا. وبصراحة، كنت متردد إني أجي ولا لأ، بس قولت أجي علشان حسّيت إنك ممكن تبقي لوحدك.
+يمكن عمري ما قلتلك الكلام ده، بس أهو جه الوقت المناسب ليه. وده كان يُعتبر أول موقف أعمله معاكي بقلبي بجد، ومن هنا علاقتنا بقت قوية. 🥰💗`
+},
+{
+ title: "A Special Day",
+ image: "./Photo3.jpg",
+ caption: `كانت أول حصة لعبد الوارث، وكان قبلها مرّينا سوا بأيام صعبة كده، وكنت صاحية وعيني متنفخة من العياط. بس عمري ما هنسى أبدًا كلامك ليا وقتها، ولا الكلام اللي قولتيه عني ساعتها، وعمري ما هنسى إزاي كنتِ شايلة همّي وبتدافعي عني.
+حقيقي من أجمل وأرقّ المواقف على قلبي. 💗`
+},
+{
+ title: "The Surprise",
+ image: "./Photo4.jpg",
+ caption: `اليوم اللي ميتنسيش أبدًا، لا بصورته ولا بتاريخه. بجد كنت مبسوطة جدًا فيه، ومكنتش مستوعبة إن كل ده حصل، وإن كل ده بقاله تقريبًا شهرين بيتجهزله!
+حقيقي كنت مش مستوعبة من الفرحة بجد، يعني عمري ما هنسى اليوم ده، ولا هنسى أبدًا تفكيرك ليا علشان تفرحيني. 🥹💞`
+},
+{
+ title: "One of Our Best Outings",
+ image: "./Photo5.jpg",
+ caption: `الخروجة اللي كانت هتتفشكل خلاص، بس القدر كان ليه رأي تاني، وإني أنزل وأشوفك، وتكون من أحلى الخروجات اللي لينا لوحدنا.
+كانت بسيطة، بس كانت لذيذة موت، رغم التاتش اللي حصل في آخرها، وإن إحنا خدنا ماسدج تدّينا الصدمة لأسبوعين قدّام وإحنا مروّحين 😂، بس كل حاجة وإحنا سوا بتعدّي، الحمد لله. 💞🥰`
+},
+{
+ title: "The Unexpected Meeting",
+ image: "./Photo6.jpg",
+ caption: `اليوم اللي كنا نازلين فيه من ورا باقي الشلّة، وروحنا شوفناهم كلهم، بسم الله ما شاء الله يعني! بس الحمد لله تمّت السيطرة على الموقف ساعتها، وكله عدّى. اليوم اللي إنتِ مش هتنسِيه أبدًا أكتر مني 😂💞`
+},
+{
+ title: "Two Days Apart",
+ image: "./Photo7.jpg",
+ caption: `اليوم اللي فرّقنا فيه بيومين عن بعض، بس على مين؟ محدش يقدر يفرّقنا أبدًا! 🤗🤚🏻💗`
+},
+{
+ title: "Matching Without Planning",
+ image: "./Photo8.jpg",
+ caption: `كنا عاملين ماتشينج صدمة من غير ترتيب، وده لو دلّ على حاجة، فهو يدل على التوافق الفكري اللي بينا طبعًا 😂💗`
+},
+{
+ title: "Our School Morning",
+ image: "./Photo9.jpg",
+ caption: `آهه، اليوم اللي لا يُنسى أبدًا بجد! لما نزلنا سوا الساعة ٩ الصبح، ونزلت علشانك، وروحنا المدرسة سوا. كان يوم لذيذ موت بجد، وعمري ما هنساه أبدًا.
+حقيقي كانت بالنسبالي حاجة من أحلام العصر، اللي هو إيه ده؟ رايحة مع صاحبتي نعمل حاجة علشانها لوحدها، مش خروجة مثلًا أو كده! كان أول شعور مختلف، وكان معاكي إنتِ. 🥹💗`
+},
+{
+ title: "Our Happiest Day",
+ image: "./Photo10.jpg",
+ caption: `ونختم بألذ يوم، وقد إيه كنت مبسوطة إني قدرت أفرحك! بحب الصورة دي جدًا، حقيقي، وقد إيه هي بتعبّر عن مشاعر كتير أوي ما بينا.
+حقيقي أنا محظوظة بيكي جدًا، وفرحانة إن إحنا سوا، ويا رب نفضل نحضن بعض بنفس الشغف ده. 🥹🫂💗`
+}
+];
+
+let currentMemory = 0;
+
+/** @param {string} pageId */
+function showPage(pageId) {
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.remove("active");
+  });
+  document.getElementById(pageId).classList.add("active");
+}
+
+function checkPassword() {
+  const entered = document.getElementById("passwordInput").value;
+  if (entered === SECRET_PASSWORD) {
+    showPage("welcomePage");
+    document.getElementById("passwordError").textContent = "";
+  } else {
+    document.getElementById("passwordError").textContent = "Oops! Try again 💗";
+  }
+}
+
+function displayMemory() {
+  const memory = memories[currentMemory];
+  document.getElementById("memoryNumber").textContent = `Memory ${currentMemory + 1} of ${memories.length}`;
+  document.getElementById("memoryTitle").textContent = memory.title;
+  const img = document.getElementById("memoryImage");
+  img.src = memory.image;
+  img.alt = memory.title;
+  document.getElementById("memoryCaption").textContent = memory.caption;
+  document.getElementById("nextMemoryButton").textContent =
+    currentMemory === memories.length - 1 ? "Our Final Message 💗" : "Next Memory 💗";
+}
+
+function nextMemory() {
+  if (currentMemory < memories.length - 1) {
+    currentMemory++;
+    displayMemory();
+  } else {
+    showPage("finalPage");
+  }
+}
+
+function previousMemory() {
+  if (currentMemory > 0) {
+    currentMemory--;
+    displayMemory();
+  }
+}
+
+const music = document.getElementById("backgroundMusic");
+let musicSeeked = false;
+
+function toggleMusic() {
+  if (music.paused) {
+    music.play().then(() => {
+      if (!musicSeeked) {
+        music.currentTime = MUSIC_START_SECONDS;
+        musicSeeked = true;
+      }
+    }).catch(() => {
+      alert("Tap the music button again to play 🎵");
+    });
+  } else {
+    music.pause();
+  }
+}
+
+displayMemory();
+</script>
+</body>
+    </html>
